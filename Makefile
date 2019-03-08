@@ -16,7 +16,7 @@ BUILD_FILES= $(CC)  $(COMP_FLAG)
 $(EXEC) : $(OBJS)
 		$(BUILD_FILES) $(OBJS) $(OUTPUT_FILE) $@
 
-list.o: sieve_of_eratosthenes.c
+sieve_of_eratosthenes.o: sieve_of_eratosthenes.c list.h
 		$(COMPILE_FILES) $*.c
 
 
