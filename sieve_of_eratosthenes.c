@@ -4,6 +4,79 @@
 #include <stdio.h>
 
 
+Node NodeCreate(int num, Node prev, Node next) {
+	Node newNode = malloc(sizeof(*newNode));
+	if (!newNode) {
+		return NULL;
+	}
+	newNode->num = num;
+	newNode->next = next;
+	newNode->prev = prev;
+	newNode->lock = malloc(sizeof(*newNode->lock));
+	pthread_mutex_init(newNode->lock, NULL);
+	return newNode;
+}
+
+
+
+List ListCreate(int N) {
+	int i = 0;
+	List newList = malloc(sizeof(*newList));
+	if (!newList)
+		return NULL;
+	Node head = NodeCreate(2, NULL, NULL);
+	if (!head) {
+		free(newList);
+		return NULL;
+	}
+	if (N >= 2) {
+		Node last = NodeCreate(N, head, NULL);
+		if (!head) {
+			free(newList);
+			return NULL;
+		}
+		head->next = last;
+		newList->head = head;
+		newList->last = last;
+		Node prev = newList->head;
+		Node next = newList->last;
+		for (i = 2; i <= N; i++) {
+			Node newN = NodeCreate(i, prev, next);
+			prev->next = newN;
+			prev = newN;
+			next->prev = prev;
+			
+		}
+		next->prev = prev;
+	} else { // check this
+		newList->head = head;
+		newList->last = head;
+	}
+	return newList;
+}
+
+
+void ListDestroy(List list) {
+	if (!list)
+		return;
+		Node elem=list->head;
+		Node pos = list->head;
+		while (pos != NULL) {
+			elem = pos;
+			pos = pos->next;
+
+//			pthread_mutex_unlock(elem->lock);
+//			pthread_mutex_destroy(elem->lock);
+			free(elem->lock);
+			free(elem);
+		}
+
+
+	// deallocate memory
+	free(list);
+}
+
+
 /*
  * main code
 */
